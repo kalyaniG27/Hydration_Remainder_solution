@@ -1,0 +1,90 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join HydroTrack</title>
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+</head>
+
+<body>
+  <div class="signup-container">
+   <img src="{% static 'images/dimg.jpg'%}" alt="HydroTrack Logo" class="logo" />
+
+    <h2>Join <span class="highlight">HydroTrack</span></h2>
+    <p>Create your account and start your hydration journey</p>
+
+    <form method="POST" class="signup-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+      <div class="row">
+        <div class="field">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          {{ form.first_name }}
+         
+        </div>
+        <div class="field">
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+          {{ form.last_name }}
+         
+        </div>
+      </div>
+
+      <div class="field">
+        <label "{{ form.email.id_for_label }}">Email Address</label>
+        {{ form.email }}
+        
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+          
+        </div>
+        <div class="field">
+          <label for="{{ form.confirm_password.id_for_label }}">Confirm Password</label>
+          {{ form.confirm_password }}
+          
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="{{ form.weight.id_for_label }}">Weight (kg)</label>
+          {{ form.weight }}
+          
+        </div>
+        <div class="field">
+          <label for="{{ form.location.id_for_label }}">Location (for weather)</label>
+           {{ form.location }}
+          
+          <small>We'll use this to provide weather-based hydration tips</small>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="{{ form.activity_level.id_for_label }}">Activity Level</label>
+        {{ form.activity_level }}
+        <select>
+          <option>Light (light exercise 1–3 days/week)</option>
+          <option>Moderate (3–5 days/week)</option>
+          <option>Intense (daily or heavy training)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="{{ form.water_goal.id_for_label }}">Daily Water Goal (ml)</label>
+        {{ form.water_goal }}
+        
+        <small>Recommended: 2000ml based on your weight and activity level</small>
+      </div>
+
+      <button type="submit" class="btn-submit">Create Account</button>
+
+      <p class="login-link">Already have an account? <a href="#">Sign in here</a></p>
+    </form>
+  </div>
+</body>
+</html>

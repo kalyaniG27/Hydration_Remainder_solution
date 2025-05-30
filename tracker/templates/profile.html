@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+      height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+    .sidebar h1 {
+      color: #3a86ff;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      padding: 10px 0;
+      cursor: pointer;
+    }
+    .sidebar li:hover {
+      color: #3a86ff;
+    }
+    .streak {
+      background-color: #f0f7ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .profile-container {
+      flex-grow: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .profile-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .profile-header .icon {
+      font-size: 60px;
+      background: #e0f2fe;
+      border-radius: 50%;
+      display: inline-block;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .info-section {
+      margin-bottom: 30px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      row-gap: 16px;
+      column-gap: 16px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #555;
+    }
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #e0e0e0;
+    }
+    .edit-profile {
+      display: flex;
+      justify-content: center;
+    }
+    .edit-profile button {
+      background-color: #0ea5e9;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .edit-profile button:hover {
+      background-color: #0284c7;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h1>HydroTrack</h1>
+    <ul>
+      <li><a href="dashboard_with_layout.html" style="text-decoration: none; color: inherit;">Dashboard</a></li>
+      <li><a href="full_calendar.html" style="text-decoration: none; color: inherit;">History</a></li>
+      <li style="color: #3a86ff; font-weight: bold;">Profile</li>
+    </ul>
+    <div class="streak">
+      <p><strong>Current Streak</strong></p>
+      <p>0 days</p>
+    </div>
+  </div>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="icon">👤</div>
+    </div>
+
+    <div class="info-section">
+      <h3 class="section-title">Account Information</h3>
+      <div class="info-grid">
+        <div class="info-label">Username</div>
+        <div id="username">-</div>
+
+        <div class="info-label">Email</div>
+        <div id="email">-</div>
+
+        <div class="info-label">Name</div>
+        <div>-</div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="info-section">
+      <h3 class="section-title">Water Tracking Settings</h3>
+      <div class="info-grid">
+        <div class="info-label">Daily Water Goal</div>
+        <div>2000 ml</div>
+
+        <div class="info-label">Reminder Interval</div>
+        <div>Every 60 minutes</div>
+      </div>
+    </div>
+
+    <div class="edit-profile">
+      <button onclick="alert('Edit Profile Clicked')">Edit Profile</button>
+    </div>
+  </div>
+
+  <script>
+    const userData = {
+      username: localStorage.getItem("username") || "",
+      email: localStorage.getItem("email") || "",
+    };
+
+    document.getElementById("username").textContent = userData.username;
+    document.getElementById("email").textContent = userData.email;
+  </script>
+</body>
+</html>

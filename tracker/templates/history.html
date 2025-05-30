@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Intake Calendar</title>
+  <style>
+    :root {
+      --bg-secondary: #f9f9f9;
+      --bg-tertiary: #ffffff;
+      --text-secondary: #555;
+      --text-tertiary: #888;
+      --primary-50: #e0f2fe;
+      --primary-100: #bae6fd;
+      --primary-300: #38bdf8;
+      --primary-500: #0ea5e9;
+      --primary-600: #0284c7;
+      --primary-900: #1e3a8a;
+      --success-500: #22c55e;
+      --neutral-200: #e5e7eb;
+      --neutral-700: #374151;
+      --border-radius-md: 8px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+
+    .history-page {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      <a href="{% url 'history' %}">View History</a>
+
+    }
+
+    .calendar-container {
+      background-color: var(--bg-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 24px;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 24px;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      padding: 8px;
+      border-radius: var(--border-radius-md);
+      background-color: var(--bg-tertiary);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: 0.2s;
+    }
+
+    .calendar-day:hover {
+      transform: translateY(-2px);
+      background-color: var(--primary-50);
+    }
+
+    .day-number {
+      font-weight: 500;
+    }
+
+    .day-progress {
+      margin-top: auto;
+      height: 4px;
+      border-radius: 2px;
+      background-color: var(--primary-500);
+    }
+  </style>
+</head>
+<body>
+<h1>Water Intake History</h1>
+<div class="history-page">
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button onclick="prevMonth()">«</button>
+      <h2 id="monthYearDisplay"></h2>
+      <button onclick="nextMonth()">»</button>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Weekdays -->
+      <div class="weekday">Sun</div>
+      <div class="weekday">Mon</div>
+      <div class="weekday">Tue</div>
+      <div class="weekday">Wed</div>
+      <div class="weekday">Thu</div>
+      <div class="weekday">Fri</div>
+      <div class="weekday">Sat</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const calendarGrid = document.getElementById("calendarGrid");
+  const monthYearDisplay = document.getElementById("monthYearDisplay");
+  let currentMonth = new Date();
+
+  function renderCalendar() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+
+    calendarGrid.innerHTML = `
+      <div class="weekday">Sun</div>
+      <div class="weekday">Mon</div>
+      <div class="weekday">Tue</div>
+      <div class="weekday">Wed</div>
+      <div class="weekday">Thu</div>
+      <div class="weekday">Fri</div>
+      <div class="weekday">Sat</div>
+    `;
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarGrid.innerHTML += <div class="calendar-day" style="opacity: 0;"></div>;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateStr = date.toISOString().split("T")[0];
+      const isToday = dateStr === todayStr;
+
+      calendarGrid.innerHTML += `
+        <div class="calendar-day ${isToday ? "today" : ""}">
+          <div class="day-number">${day}</div>
+          <div class="day-progress" style="width: ${Math.floor(Math.random() * 100)}%"></div>
+        </div>
+      `;
+    }
+
+    monthYearDisplay.textContent = currentMonth.toLocaleDateString("default", {
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  function nextMonth() {
+    currentMonth.setMonth(currentMonth.getMonth() + 1);
+    renderCalendar();
+  }
+
+  function prevMonth() {
+    currentMonth.setMonth(currentMonth.getMonth() - 1);
+    renderCalendar();
+  }
+
+  renderCalendar();
+</script>
+
+</body>
+</html>
