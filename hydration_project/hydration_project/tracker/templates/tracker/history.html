@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Intake History</title>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Water Intake History</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'tracker:home' %}">Home</a></li>
+                <li><a href="{% url 'tracker:dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'tracker:profile' %}">Profile</a></li>
+                <li><a href="{% url 'tracker:logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>History for {{ month }}/{{ year }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Total Intake (ml)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in history_data %}
+                <tr>
+                    <td>{{ entry.day }}</td>
+                    <td>{{ entry.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'tracker:dashboard' %}">Back to Dashboard</a>
+    </main>
+    <footer>
+        <p>&copy; {{ current_year }} Hydration Tracker</p>
+    </footer>
+</body>
+</html>

@@ -1,15 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class UserProfile(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
-    weight = models.FloatField()
-    location = models.CharField(max_length=100)
-    activity_level = models.CharField(max_length=50)
-    water_goal = models.IntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    daily_goal = models.PositiveIntegerField(default=2000)  # in ml
+    reminder_interval = models.PositiveIntegerField(default=0)  # in minutes
+    last_reminder_sent = models.DateTimeField(null=True, blank=True)
+    
+class WaterIntake(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()  # in ml
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
+   
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-# Create your models here.
+        return f"{self.user.username} - {self.amount}ml on {self.date}"

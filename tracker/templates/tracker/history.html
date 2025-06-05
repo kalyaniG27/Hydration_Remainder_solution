@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Intake History</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      display: flex;
+      width: 100%;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+      height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+    .sidebar-header {
+      color: #3a86ff;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-menu li {
+      padding: 10px 0;
+    }
+    .sidebar-menu li.active,
+    .sidebar-menu li:hover {
+      color: #3a86ff;
+      font-weight: bold;
+    }
+    .sidebar-menu a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .streak-box {
+      background-color: #f0f7ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .main-content {
+      flex-grow: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .calendar-container {
+      margin-top: 30px;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.03);
+    }
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      gap: 20px;
+    }
+    .calendar-header button {
+      background: #e0f2fe;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: #0284c7;
+      transition: background 0.2s;
+    }
+    .calendar-header button:hover {
+      background: #bae6fd;
+    }
+    .calendar-header h2 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0284c7;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .weekday {
+      font-weight: bold;
+      color: #3a86ff;
+      text-align: center;
+      padding-bottom: 4px;
+    }
+    .calendar-day {
+      background: #e0f2fe;
+      border-radius: 6px;
+      min-height: 60px;
+      text-align: center;
+      padding: 6px 2px 2px 2px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 1em;
+    }
+    .calendar-day.today {
+      border: 2px solid #3a86ff;
+      background: #fffbe6;
+    }
+    .day-number {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .day-progress {
+      height: 8px;
+      border-radius: 4px;
+      background: #3a86ff;
+      margin: 4px 0 2px 0;
+      width: 0;
+      transition: width 0.4s;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">HydroTrack</div>
+      <ul class="sidebar-menu">
+        <li><a href="{% url 'tracker:dashboard' %}">Dashboard</a></li>
+        <li class="active"><a href="{% url 'tracker:history' %}">History</a></li>
+        <li><a href="{% url 'tracker:profile' %}">Profile</a></li>
+      </ul>
+      <div class="streak-box">
+        <p><strong>Current Streak</strong></p>
+        <p>0 days</p>
+      </div>
+    </div>
+    <div class="main-content">
+      <h1>Water Intake History</h1>
+      <div class="history-page">
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button onclick="prevMonth()">«</button>
+            <h2 id="monthYearDisplay"></h2>
+            <button onclick="nextMonth()">»</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Weekdays and days will be rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+  // Pass Django context data to JS
+  const historyData = {{ history_data|safe }};
+  const dailyGoal = 2000; // Or pass from Django if user-specific
+  const calendarGrid = document.getElementById("calendarGrid");
+  const monthYearDisplay = document.getElementById("monthYearDisplay");
+  let currentMonth = new Date({{ year }}, {{ month }} - 1);
+
+  function renderCalendar() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+
+    calendarGrid.innerHTML = `
+      <div class="weekday">Sun</div>
+      <div class="weekday">Mon</div>
+      <div class="weekday">Tue</div>
+      <div class="weekday">Wed</div>
+      <div class="weekday">Thu</div>
+      <div class="weekday">Fri</div>
+      <div class="weekday">Sat</div>
+    `;
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarGrid.innerHTML += `<div class="calendar-day" style="opacity: 0;"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const entry = historyData.find(d => d.day === day);
+      const total = entry ? entry.total : 0;
+      const percent = Math.min(100, Math.round((total / dailyGoal) * 100));
+      const isToday = (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year);
+
+      calendarGrid.innerHTML += `
+        <div class="calendar-day ${isToday ? "today" : ""}">
+          <div class="day-number">${day}</div>
+          <div class="day-progress" style="width: ${percent}%"></div>
+          <div style="font-size:0.8em;color:#888;">${total > 0 ? total + "ml" : ""}</div>
+        </div>
+      `;
+    }
+
+    monthYearDisplay.textContent = currentMonth.toLocaleDateString("default", {
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  function nextMonth() {
+    currentMonth.setMonth(currentMonth.getMonth() + 1);
+    renderCalendar();
+  }
+
+  function prevMonth() {
+    currentMonth.setMonth(currentMonth.getMonth() - 1);
+    renderCalendar();
+  }
+
+  renderCalendar();
+</script>
+</body>
+</html>

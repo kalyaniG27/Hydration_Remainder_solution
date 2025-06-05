@@ -1,9 +1,13 @@
 from django import forms
-from .models import UserProfile
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import AuthenticationForm
+from .models import UserProfile
 
+class ReminderIntervalForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['reminder_interval']
 
 ACTIVITY_CHOICES = [
     ('Light', 'Light (light exercise 1–3 days/week)'),
@@ -18,6 +22,11 @@ class SignupForm(forms.ModelForm):
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'placeholder': 'Enter your last name',
     }))
+    mobile_no = forms.CharField(
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter your mobile number'})
+    )
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
         'placeholder': 'Enter your email',
     }))
@@ -39,18 +48,11 @@ class SignupForm(forms.ModelForm):
     }))
 
     class Meta:
-        model = UserProfile
-        fields = ['first_name', 'last_name', 'email', 'password', 'weight', 'location', 'activity_level', 'water_goal']
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter your first name'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Enter your last name'}),
-            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Enter your email'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Create a password'}),
-            'weight': forms.NumberInput(attrs={'class': 'form-input', 'placeholder': 'Enter your weight'}),
-            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City, Country'}),
-            'activity_level': forms.Select(attrs={'class': 'form-input'}),
-            'water_goal': forms.NumberInput(attrs={'class': 'form-input'}),
-        }
+        model = UserProfile  # Use UserProfile, not User
+        fields = [
+            'first_name', 'last_name', 'mobile_no', 'email', 'password',
+            'weight', 'location', 'activity_level', 'water_goal'
+        ]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -58,7 +60,6 @@ class SignupForm(forms.ModelForm):
         confirm = cleaned_data.get("confirm_password")
         if password and confirm and password != confirm:
             raise forms.ValidationError("Passwords do not match.")
-
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.EmailInput(attrs={

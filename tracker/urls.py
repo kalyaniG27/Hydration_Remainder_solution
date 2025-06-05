@@ -1,17 +1,15 @@
-from django.urls import path,include
-from .views import signup_view
-from .views import UserLoginView
-from .views import history_view
+from django.urls import path
 from . import views
-from .views import home 
+
+app_name = 'tracker' 
 
 
 urlpatterns = [
-    path('signup/', signup_view, name='signup'),
-    path('login/', UserLoginView.as_view(), name='login'),
-    path('history/', history_view, name='history'),
-    path('', views.home, name='home'),  # or whatever your app is called
-    path('dashboard/', views.dashboard_view, name='dashboard'),
-     path('', home, name='home'),
-
+    path('', views.dashboard_view, name='dashboard'),
+    path('signup/', views.signup_view, name='signup'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', views.logout_view, name='logout'),
+   # path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('history/', views.history_view, name='history'),
+    path('profile/', views.profile_view, name='profile'),
 ]

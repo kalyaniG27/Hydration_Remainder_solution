@@ -1,0 +1,21 @@
+<div class="reminder-card">
+  <div class="reminder-header">
+    <h3>Water Reminder</h3>
+  </div>
+  <div class="reminder-info">
+    {% if reminder_time %}
+      <span>Reminder set for: <strong>{{ reminder_time|time:"H:i" }}</strong></span>
+    {% else %}
+      <span>No reminder set.</span>
+    {% endif %}
+  </div>
+  <form method="post" class="timer-form" style="margin-top:15px;">
+    {% csrf_token %}
+    <label for="reminder_time"><strong>Set Reminder Time:</strong></label>
+    <input type="time" id="reminder_time" name="reminder_time" required>
+    <button type="submit" name="set_reminder">Set Reminder</button>
+  </form>
+  {% if reminder_message %}
+    <div id="timer-message" style="color:#3a86ff; margin-top:10px;">{{ reminder_message }}</div>
+  {% endif %}
+</div>

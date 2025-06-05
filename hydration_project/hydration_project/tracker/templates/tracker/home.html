@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Intake Tracker</title>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Your Water Intake Tracker</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'tracker:dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'tracker:history' %}">History</a></li>
+                <li><a href="{% url 'tracker:profile' %}">Profile</a></li>
+                <li><a href="{% url 'tracker:logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Today's Water Intake</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="amount">Amount (in ml):</label>
+            <input type="number" id="amount" name="amount" required>
+            <button type="submit">Add Water Intake</button>
+        </form>
+        <h3>Your Daily Goal: {{ daily_goal }} ml</h3>
+        <h3>Current Intake: {{ current_intake }} ml</h3>
+        <div>
+            <h4>Progress: {{ progress_percent }}%</h4>
+            <div style="width: 100%; background-color: #e0e0e0;">
+                <div style="width: {{ progress_percent }}%; background-color: #76c7c0; height: 20px;"></div>
+            </div>
+        </div>
+        <h3>Today's Entries</h3>
+        <ul>
+            {% for entry in todays_entries %}
+                <li>{{ entry.time }} - {{ entry.amount }} ml</li>
+            {% empty %}
+                <li>No entries for today.</li>
+            {% endfor %}
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; {{ current_year }} Water Intake Tracker</p>
+    </footer>
+</body>
+</html>

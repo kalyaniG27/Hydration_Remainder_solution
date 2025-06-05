@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+      height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+    .sidebar h1 {
+      color: #3a86ff;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      padding: 10px 0;
+      cursor: pointer;
+    }
+    .sidebar li.active,
+    .sidebar li:hover {
+      color: #3a86ff;
+      font-weight: bold;
+    }
+    .sidebar a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .profile-container {
+      flex-grow: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .profile-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .profile-header .icon {
+      font-size: 60px;
+      background: #e0f2fe;
+      border-radius: 50%;
+      display: inline-block;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+    .info-section {
+      margin-bottom: 30px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #555;
+      width: 200px;
+      display: inline-block;
+    }
+    .info-value {
+      color: #222;
+    }
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #e0e0e0;
+    }
+    .logout-btn {
+      background:#3a86ff;
+      color:#fff;
+      padding:10px 30px;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      margin-top: 30px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h1>HydroTrack</h1>
+    <ul>
+      <li><a href="{% url 'tracker:dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'tracker:history' %}">History</a></li>
+      <li class="active"><a href="{% url 'tracker:profile' %}">Profile</a></li>
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'tracker:logout' %}">Logout</a></li>
+      {% else %}
+        <li><a href="{% url 'tracker:login' %}">Login</a></li>
+        <li><a href="{% url 'tracker:signup' %}">Signup</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="icon">👤</div>
+      <h2>User Profile</h2>
+    </div>
+    <div class="info-section">
+      <span class="info-label">Username:</span>
+      <span class="info-value">{{ username }}</span>
+    </div>
+    <div class="info-section">
+      <span class="info-label">Email:</span>
+      <span class="info-value">{{ email }}</span>
+    </div>
+    <div class="info-section">
+      <span class="info-label">Name:</span>
+      <span class="info-value">{{ name }}</span>
+    </div>
+    <div class="info-section">
+  <span class="info-label">Reminder Interval:</span>
+  <span class="info-value">
+    {% if reminder_interval %}
+      Every {{ reminder_interval }} minutes
+    {% else %}
+      Not set
+    {% endif %}
+  </span>
+</div>
+
+    {% if user.is_authenticated %}
+    <form action="{% url 'tracker:logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+    {% endif %}
+  </div>
+</body>
+</html>

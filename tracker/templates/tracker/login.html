@@ -20,23 +20,26 @@
     <form method="POST">
       {% csrf_token %}
       {{ form.non_field_errors }}
-      <label for="username">Email</label>
-      {{ form.username }}
 
-      <label for="password">Password</label>
+      <label for="{{ form.username.id_for_label }}">Email</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+
+      <label for="{{ form.password.id_for_label }}">Password</label>
       {{ form.password }}
+      {{ form.password.errors }}
 
       <button type="submit">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        {% comment %} <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
+        </svg> {% endcomment %}
         Log In
       </button>
     </form>
 
     <p class="signup-link">
-      Don’t have an account? <a href="{% url 'signup' %}">Sign Up</a>
+      Don’t have an account? <a href="{% url 'tracker:signup' %}">Sign Up</a>
     </p>
   </div>
 </body>
-</html>
+</html>   

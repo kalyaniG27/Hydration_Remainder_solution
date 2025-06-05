@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HydroTrack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ...existing CSS... */
+    :root {
+      --primary: #3a86ff;
+      --primary-light: #e6f2ff;
+      --bg: #f8f9fa;
+      --text: #333;
+      --text-secondary: #666;
+      --border: #e0e0e0;
+      --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px;
+      background-color: var(--card-bg);
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+    .sidebar-header {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+    .sidebar-menu li { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .sidebar-menu li a { color: inherit; text-decoration: none; display: block; width: 100%; }
+    .sidebar-menu li a:hover, .sidebar-menu li.active { color: var(--primary); font-weight: bold; }
+    .streak-box {
+      background-color: var(--primary-light);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .streak-box p { margin: 5px 0; }
+    .main-content { flex: 1; padding: 30px; background-color: var(--bg); }
+    .dashboard-header { margin-bottom: 30px; }
+    .dashboard-header h1 { margin: 0; color: var(--text); }
+    .dashboard-header p { margin: 5px 0; color: var(--text-secondary); }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .water-intake-card, .reminder-card, .entries-section {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+    }
+    .water-intake-card h2 { margin-top: 0; margin-bottom: 20px; font-size: 1.3rem; }
+    .quick-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .quick-buttons button {
+      padding: 15px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .quick-buttons button:hover { background: var(--primary); color: white; }
+    .custom-amount { margin-top: 20px; }
+    .custom-amount label { display: block; font-weight: bold; margin-bottom: 10px; }
+    .amount-controls { display: flex; align-items: center; gap: 10px; }
+    .counter { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .counter button {
+      background: var(--bg);
+      border: none;
+      padding: 12px 16px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .counter span {
+      padding: 12px 20px;
+      background: white;
+      font-size: 1.1rem;
+      min-width: 70px;
+      text-align: center;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .add-button,
+    .set-goal-form button,
+    .timer-form button {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .add-button:hover,
+    .set-goal-form button:hover,
+    .timer-form button:hover {
+      background: #2a75e6;
+      box-shadow: 0 2px 8px rgba(58,134,255,0.15);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .reminder-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .reminder-header h3 { margin: 0; font-size: 1.3rem; }
+    .reminder-info { margin-bottom: 10px; font-size: 1rem; }
+    .progress-section {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+    .progress-message { text-align: center; margin: 20px 0; font-weight: bold; font-size: 1.1rem; }
+    .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+    .stat-card { background-color: var(--bg); padding: 18px; border-radius: 10px; text-align: center; }
+    .stat-card h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text-secondary); }
+    .stat-value { font-size: 1.6rem; font-weight: 600; margin: 0; color: var(--primary); }
+    .water-bottle {
+      width: 100px; height: 360px; position: relative; margin: 0 auto 20px auto;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .bottle-neck { width: 40px; height: 25px; background: var(--primary); border-radius: 6px; margin-bottom: 5px; }
+    .bottle-body {
+      width: 100px; height: 320px; border: 4px solid var(--primary);
+      border-radius: 50px 50px 25px 25px; position: relative; overflow: hidden; background: var(--primary-light);
+    }
+    .bottle-fill {
+      position: absolute; bottom: 0; width: 100%;
+      background: linear-gradient(135deg, #3a86ff 60%, #4fc3f7 100%);
+      opacity: 0.85; transition: height 0.5s ease;
+      z-index: 1;
+    }
+    .bottle-wave {
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 2;
+    }
+    .wave {
+      position: absolute; left: 0; width: 100%; height: 100%;
+      background: url('https://svgshare.com/i/12bA.svg') repeat-x;
+      background-size: 200% 100%;
+      animation: waveMove 3s linear infinite;
+      opacity: 0.7;
+      bottom: 0;
+    }
+    @keyframes waveMove {
+      0% { background-position-x: 0; }
+      100% { background-position-x: 200px; }
+    }
+    .bottle-label {
+      position: absolute; width: 100%; text-align: center; top: 10px; color: #3a86ff; font-weight: bold; z-index: 3;
+    }
+    .entries-list { display: flex; flex-direction: column; gap: 10px; }
+    .entry-item { display: flex; justify-content: space-between; padding: 14px; background-color: var(--bg); border-radius: 8px; }
+    .entry-amount { font-weight: 600; color: var(--primary); }
+    .entry-time { color: var(--text-secondary); font-size: 0.95rem; }
+    @media (max-width: 992px) { .dashboard-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; }
+      .quick-buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">HydroTrack</div>
+      <ul class="sidebar-menu">
+        <li class="active"><a href="{% url 'tracker:dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'tracker:history' %}">History</a></li>
+        <li><a href="{% url 'tracker:profile' %}">Profile</a></li>
+      </ul>
+      <div class="streak-box">
+        <p><strong>Current Streak</strong></p>
+        <p>0 days</p>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="dashboard-header">
+        <h1>Water Tracking Dashboard</h1>
+        <form method="post" class="set-goal-form" style="margin-bottom:10px;">
+          {% csrf_token %}
+          <label for="goal"><strong>Set Daily Goal (ml):</strong></label>
+          <input type="number" name="goal" id="goal" min="500" step="100" value="{{ daily_goal }}" required>
+          <button type="submit" name="set_goal">Set Goal</button>
+        </form>
+        <p>Daily Goal: {{ daily_goal }} ml</p>
+      </div>
+      <div class="dashboard-grid">
+        <div class="left-column">
+          <div class="water-intake-card">
+            <h2>Add Water Intake</h2>
+            <form method="post" id="add-water-form">
+              {% csrf_token %}
+              <div class="quick-buttons">
+                <button type="button" onclick="setAmount(200)">200 ml</button>
+                <button type="button" onclick="setAmount(300)">300 ml</button>
+                <button type="button" onclick="setAmount(500)">500 ml</button>
+                <button type="button" onclick="setAmount(750)">750 ml</button>
+              </div>
+              <div class="custom-amount">
+                <label>Custom Amount</label>
+                <div class="amount-controls">
+                  <div class="counter">
+                    <button type="button" onclick="changeAmount(-50)">-</button>
+                    <span id="amount-value">250</span>
+                    <button type="button" onclick="changeAmount(50)">+</button>
+                  </div>
+                  <span style="margin: 0 10px;">ml</span>
+                  <input type="hidden" name="amount" id="amount-input" value="250">
+                  <button class="add-button" type="submit" name="add_water">Add</button>
+                </div>
+              </div>
+            </form>
+          </div>
+         <div class="reminder-card">
+  <div class="reminder-header">
+    <h3>Water Reminder</h3>
+  </div>
+  <div class="reminder-info">
+    {% if reminder_interval %}
+      <span>Reminder set for every <strong>{{ reminder_interval }}</strong> minutes.</span>
+    {% else %}
+      <span>No reminder set.</span>
+    {% endif %}
+  </div>
+  <form method="post" class="timer-form" style="margin-top:15px;">
+    {% csrf_token %}
+    <label for="reminder_interval"><strong>Set Reminder Interval (minutes):</strong></label>
+    <input type="number" id="reminder_interval" name="reminder_interval" min="1" required>
+    <button type="submit" name="set_reminder">Set Reminder</button>
+  </form>
+  {% if reminder_message %}
+    <div id="timer-message" style="color:#3a86ff; margin-top:10px;">{{ reminder_message }}</div>
+  {% endif %}
+</div>
+          <div class="entries-section">
+            <h3>Today's Entries</h3>
+            <div class="entries-list">
+              {% if todays_entries %}
+                {% for entry in todays_entries %}
+                  <div class="entry-item">
+                    <span class="entry-amount">{{ entry.amount }} ml</span>
+                    <span class="entry-time">{{ entry.time|time:"h:i A" }}</span>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <p>No entries yet today.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="right-column">
+          <div class="progress-section">
+            <div class="water-bottle">
+              <div class="bottle-neck"></div>
+              <div class="bottle-body">
+                <div class="bottle-fill" style="height: {{ progress_percent }}%;"></div>
+                <div class="bottle-wave" style="height: {{ progress_percent }}%;">
+                  <div class="wave"></div>
+                </div>
+                <div class="bottle-label">{{ current_intake }} / {{ daily_goal }} ml</div>
+              </div>
+            </div>
+            <div class="progress-message">
+              {% if progress_percent >= 100 %}
+                🎉 Goal reached! Great job!
+              {% elif progress_percent > 0 %}
+                Good progress! Keep it up.<br>
+                {{ progress_percent }}% of daily goal
+              {% else %}
+                Start tracking your water intake!
+              {% endif %}
+            </div>
+            <div class="stats-container">
+              <div class="stat-card">
+                <h4>Today's Intake</h4>
+                <p class="stat-value">{{ current_intake }} ml</p>
+              </div>
+              <div class="stat-card">
+                <h4>Progress</h4>
+                <p class="stat-value">{{ progress_percent }}%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Quick buttons and custom counter logic
+    function setAmount(val) {
+      document.getElementById('amount-value').textContent = val;
+      document.getElementById('amount-input').value = val;
+    }
+    function changeAmount(delta) {
+      let val = parseInt(document.getElementById('amount-value').textContent);
+      val = Math.max(50, val + delta);
+      document.getElementById('amount-value').textContent = val;
+      document.getElementById('amount-input').value = val;
+    }
+  </script>
+  {% if reminder_interval %}
+ <script>
+  // reminder_interval is in minutes, convert to milliseconds
+  var interval = {{ reminder_interval|default:0 }} * 60 * 1000;
+  setTimeout(function showPopup() {
+    alert("💧 Time to drink water! (Reminder)");
+    setTimeout(showPopup, interval);
+  }, interval);
+ </script>
+{% endif %}
+</body>
+</html>
