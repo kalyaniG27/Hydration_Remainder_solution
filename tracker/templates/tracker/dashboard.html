@@ -191,12 +191,24 @@
       </ul>
       <div class="streak-box">
         <p><strong>Current Streak</strong></p>
-        <p>0 days</p>
+        <p>{{ current_streak }} day{{ current_streak|pluralize }}</p>
+      </div>
+      <div style="margin-top:20px;">
+        <p><strong>Daily Goal:</strong> {{ daily_goal }} ml</p>
+        <p><strong>Today's Intake:</strong> {{ current_intake }} ml</p>
+        <p><strong>Progress:</strong> {{ progress_percent }}%</p>
       </div>
     </div>
     <div class="main-content">
       <div class="dashboard-header">
         <h1>Water Tracking Dashboard</h1>
+        <!-- Removed Send Reminder Button -->
+        {% if reminder_message %}
+          <div style="color: green; margin-bottom: 10px;">{{ reminder_message }}</div>
+        {% endif %}
+        {% if popup_message %}
+          <div style="color: #0077cc; margin-bottom: 10px;">{{ popup_message }}</div>
+        {% endif %}
         <form method="post" class="set-goal-form" style="margin-bottom:10px;">
           {% csrf_token %}
           <label for="goal"><strong>Set Daily Goal (ml):</strong></label>
@@ -307,27 +319,64 @@
     </div>
   </div>
   <script>
-    // Quick buttons and custom counter logic
-    function setAmount(val) {
-      document.getElementById('amount-value').textContent = val;
-      document.getElementById('amount-input').value = val;
-    }
-    function changeAmount(delta) {
-      let val = parseInt(document.getElementById('amount-value').textContent);
-      val = Math.max(50, val + delta);
-      document.getElementById('amount-value').textContent = val;
-      document.getElementById('amount-input').value = val;
-    }
-  </script>
-  {% if reminder_interval %}
- <script>
+  // Quick buttons and custom counter logic
+  function setAmount(val) {
+    document.getElementById('amount-value').textContent = val;
+    document.getElementById('amount-input').value = val;
+  }
+
+  function changeAmount(delta) {
+    let val = parseInt(document.getElementById('amount-value').textContent);
+    val = Math.max(50, val + delta);
+    document.getElementById('amount-value').textContent = val;
+    document.getElementById('amount-input').value = val;
+  }
+</script>
+
+{% if reminder_interval %}
+<script>
   // reminder_interval is in minutes, convert to milliseconds
   var interval = {{ reminder_interval|default:0 }} * 60 * 1000;
   setTimeout(function showPopup() {
     alert("💧 Time to drink water! (Reminder)");
     setTimeout(showPopup, interval);
   }, interval);
- </script>
+</script>
 {% endif %}
+
+<script>
+  function askNotificationPermission() {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }
+
+  function showReminderNotification() {
+    if (Notification.permission === "granted") {
+      new Notification("💧 Time to Hydrate!", {
+        body: "It's time to drink water!",
+        icon: "/static/icons/water.png"
+      });
+    }
+  }
+
+  function checkReminder() {
+    fetch('/check_reminder_due/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.reminder) {
+          showReminderNotification();
+        }
+      });
+  }
+
+  // Request permission on load
+  askNotificationPermission();
+
+  // Check every minute
+  setInterval(checkReminder, 60000); // 60 seconds
+</script>
+
+
 </body>
 </html>

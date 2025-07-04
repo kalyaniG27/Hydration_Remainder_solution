@@ -22,37 +22,23 @@ class SignupForm(forms.ModelForm):
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'placeholder': 'Enter your last name',
     }))
-    mobile_no = forms.CharField(
-        max_length=15,
-        required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter your mobile number'})
-    )
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
-        'placeholder': 'Enter your email',
-    }))
+    email = forms.EmailField(required=True)
+    
+    
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Create a password',
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': 'Confirm your password',
     }))
-    weight = forms.IntegerField(required=True, widget=forms.NumberInput(attrs={
-        'placeholder': 'Enter your weight',
-    }))
-    location = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={
-        'placeholder': 'City, Country',
-    }))
-    activity_level = forms.ChoiceField(choices=ACTIVITY_CHOICES, widget=forms.Select())
-    water_goal = forms.IntegerField(required=True, widget=forms.NumberInput(attrs={
-        'value': '2000',
-    }))
+    
+
 
     class Meta:
         model = UserProfile  # Use UserProfile, not User
         fields = [
-            'first_name', 'last_name', 'mobile_no', 'email', 'password',
-            'weight', 'location', 'activity_level', 'water_goal'
-        ]
+            'first_name', 'last_name', 'email', 'password',
+           ]
 
     def clean(self):
         cleaned_data = super().clean()

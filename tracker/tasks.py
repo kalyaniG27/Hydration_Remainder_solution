@@ -1,22 +1,26 @@
 from celery import shared_task
-from django.utils import timezone
+from django.utils.timezone import now, timedelta
 from django.core.mail import send_mail
-from .models import UserProfile
+from tracker.models import UserProfile
+from django.conf import settings
 
 @shared_task
-def send_water_reminders():
-    now = timezone.now()
-    profiles = UserProfile.objects.filter(reminder_interval__gt=0)
-    for profile in profiles:
-        last_sent = profile.last_reminder_sent
-        if not last_sent or (now - last_sent).total_seconds() >= profile.reminder_interval * 60:
-            if profile.user.email:
-                print(f"Sending email to {profile.user.email}")  # Add this line
+def send_hydration_reminders():
+    users = UserProfile.objects.all()
+    for user in users:
+        if user.email and now() >= user.next_reminder_time:
+            try:
                 send_mail(
-                    'Hydration Reminder',
-                    'Time to drink water!',
-                    'your_gmail@gmail.com',
-                    [profile.user.email],
+                    subject="💧 Hydration Reminder",
+                    message=f"Hi {user.user.username}, it's time to drink water and stay hydrated!",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
                 )
-                profile.last_reminder_sent = now
-                profile.save()
+                print(f"✅ Reminder sent to {user.email}")
+
+                # Update next reminder time
+                user.next_reminder_time = now() + timedelta(minutes=user.reminder_interval_minutes)
+                user.save()
+            except Exception as e:
+                print(f"❌ Failed to send reminder to {user.email}: {e}")
