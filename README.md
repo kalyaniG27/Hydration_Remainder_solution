@@ -34,9 +34,9 @@ A Django-based hydration reminder application to help users maintain healthy wat
 
 ```bash
 # Clone the repo
-git clone https://github.com/kalyaniG27/Hydration_Remainder_solution.git
-cd Hydration_Remainder_solution
-
+ git clone https://github.com/kalyaniG27/Hydration_Remainder_solution.git
+ cd Hydration_Remainder_solution
+      
 # Setup virtual environment
 python -m venv .venv
 source .venv/Scripts/activate  # On Windows
