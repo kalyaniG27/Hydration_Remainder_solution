@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='profile')
     
     daily_goal = models.PositiveIntegerField(default=2000)  # in ml
     reminder_interval = models.PositiveIntegerField(default=0)  # in minutes
