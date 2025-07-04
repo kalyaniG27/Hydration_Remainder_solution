@@ -5,7 +5,9 @@ from celery import Celery
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'tracker/static')]
 
 LOGIN_REDIRECT_URL = '/'
@@ -40,8 +42,8 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 SECRET_KEY = 'django-insecure--bxh*u!*g4xlpi08mp=f9fcz^5@3f59x464bwac)8y7q-mj*l6'
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['kalyanigarud.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'tracker',

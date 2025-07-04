@@ -1,0 +1,124 @@
+* {
+      box-sizing: border-box;
+    }
+    .logo {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  object-fit: contain;
+  display: block;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(to right, #d0f1ff, #60e6c5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .header {
+      position: absolute;
+      top: 80px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color:#3b82f6;
+      margin: 0;
+    }
+
+    .header p {
+      color: #4b5563;
+      margin-top: 4px;
+      font-size: 0.95rem;
+    }
+
+    .login-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 360px;
+      margin-top: 160px;
+    }
+
+    .login-box h2 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      color: #374151;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+
+    button {
+      width: 100%;
+      background-color: #2563eb;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .login-box svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-top: 1rem;
+    }
+
+    .signup-link a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }

@@ -1,0 +1,138 @@
+body {
+  background: #e6f2ff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-container {
+  background: #fff;
+  max-width: 420px;
+  margin: 40px auto 0 auto;
+  padding: 32px 28px 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(58,134,255,0.10);
+  text-align: center;
+}
+
+.logo {
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin: 0 0 8px 0;
+  color: #3a86ff;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.highlight {
+  color: #2563eb;
+}
+
+.signup-container p {
+  color: #555;
+  margin-bottom: 18px;
+}
+
+.signup-form {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.form-errors {
+  background: #ffeaea;
+  color: #c00;
+  border: 1px solid #fbb;
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-bottom: 18px;
+  font-size: 0.98em;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.field {
+  flex: 1;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #2563eb;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #bcd0ee;
+  border-radius: 6px;
+  font-size: 1em;
+  background: #f7fbff;
+  margin-bottom: 2px;
+  transition: border 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: #3a86ff;
+  outline: none;
+}
+
+small {
+  color: #888;
+  font-size: 0.92em;
+  margin-top: 2px;
+}
+
+.btn-submit {
+  width: 100%;
+  background: #3a86ff;
+  color: #fff;
+  border: none;
+  padding: 13px 0;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: #2563eb;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1em;
+}
+
+.login-link a {
+  color: #3a86ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .signup-container {
+    padding: 18px 6px;
+    max-width: 98vw;
+  }
+  .row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
